@@ -26,6 +26,7 @@ import de.gesellix.docker.client.DockerClientImpl;
 import java.io.IOException;
 import java.time.Duration;
 import moe.rafal.agnes.server.container.ContainerCreatePacketListener;
+import moe.rafal.agnes.server.container.ContainerDeletePacketListener;
 import moe.rafal.agnes.server.container.ContainerInspectPacketListener;
 import moe.rafal.agnes.server.container.ContainerStartPacketListener;
 import moe.rafal.agnes.server.container.ContainerStopPacketListener;
@@ -52,6 +53,8 @@ class AgnesServerImpl implements AgnesServer {
     final DockerClient dockerClient = new DockerClientImpl();
     cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
         new ContainerCreatePacketListener(dockerClient, cory));
+    cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
+        new ContainerDeletePacketListener(dockerClient, cory));
     cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
         new ContainerInspectPacketListener(dockerClient, cory));
     cory.observe(PROTO_BROADCAST_CHANNEL_NAME,

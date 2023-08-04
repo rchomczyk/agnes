@@ -23,6 +23,8 @@ import moe.rafal.agnes.docker.DockerImage;
 
 public interface Agnes {
 
+  CompletableFuture<DockerContainer> inspectContainer(String containerId);
+
   CompletableFuture<String> createContainer(DockerImage image,
       long availableMemory,
       long availableMemorySwap,
@@ -31,7 +33,7 @@ public interface Agnes {
       String[] publishPorts,
       String[] environmentalVariables);
 
-  CompletableFuture<DockerContainer> inspectContainer(String containerId);
+  CompletableFuture<Void> deleteContainer(String containerId);
 
   CompletableFuture<Void> startContainer(String containerId);
 

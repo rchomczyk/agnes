@@ -24,6 +24,7 @@ import moe.rafal.agnes.docker.DockerContainer;
 import moe.rafal.agnes.docker.DockerContainerFactory;
 import moe.rafal.agnes.docker.DockerImage;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerCreatePacket;
+import moe.rafal.agnes.proto.container.c2s.C2SContainerDeletePacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerInspectPacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerStartPacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerStopPacket;
@@ -37,6 +38,13 @@ class AgnesImpl implements Agnes {
 
   AgnesImpl(Cory cory) {
     this.cory = cory;
+  }
+
+  @Override
+  public CompletableFuture<DockerContainer> inspectContainer(String containerId) {
+    return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerInspectPacket(containerId))
+        .thenApply(S2CContainerInspectPacket.class::cast)
+        .thenApply(DockerContainerFactory::produceDockerContainer);
   }
 
   @Override
@@ -62,10 +70,10 @@ class AgnesImpl implements Agnes {
   }
 
   @Override
-  public CompletableFuture<DockerContainer> inspectContainer(String containerId) {
-    return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerInspectPacket(containerId))
-        .thenApply(S2CContainerInspectPacket.class::cast)
-        .thenApply(DockerContainerFactory::produceDockerContainer);
+  public CompletableFuture<Void> deleteContainer(String containerId) {
+    return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerDeletePacket(containerId))
+        .thenAccept(packet -> {
+        });
   }
 
   @Override
