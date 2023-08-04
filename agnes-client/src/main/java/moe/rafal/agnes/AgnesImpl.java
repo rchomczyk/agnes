@@ -26,6 +26,7 @@ import moe.rafal.agnes.docker.DockerImage;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerCreatePacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerInspectPacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerStartPacket;
+import moe.rafal.agnes.proto.container.c2s.C2SContainerStopPacket;
 import moe.rafal.agnes.proto.container.s2c.S2CContainerCreatePacket;
 import moe.rafal.agnes.proto.container.s2c.S2CContainerInspectPacket;
 import moe.rafal.cory.Cory;
@@ -70,6 +71,13 @@ class AgnesImpl implements Agnes {
   @Override
   public CompletableFuture<Void> startContainer(String containerId) {
     return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerStartPacket(containerId))
+        .thenAccept(packet -> {
+        });
+  }
+
+  @Override
+  public CompletableFuture<Void> stopContainer(String containerId) {
+    return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerStopPacket(containerId))
         .thenAccept(packet -> {
         });
   }

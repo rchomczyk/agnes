@@ -28,6 +28,7 @@ import java.time.Duration;
 import moe.rafal.agnes.server.container.ContainerCreatePacketListener;
 import moe.rafal.agnes.server.container.ContainerInspectPacketListener;
 import moe.rafal.agnes.server.container.ContainerStartPacketListener;
+import moe.rafal.agnes.server.container.ContainerStopPacketListener;
 import moe.rafal.cory.Cory;
 import moe.rafal.cory.CoryBuilder;
 
@@ -55,6 +56,8 @@ class AgnesServerImpl implements AgnesServer {
         new ContainerInspectPacketListener(dockerClient, cory));
     cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
         new ContainerStartPacketListener(dockerClient, cory));
+    cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
+        new ContainerStopPacketListener(dockerClient, cory));
   }
 
   @Override
