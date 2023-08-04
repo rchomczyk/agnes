@@ -34,4 +34,6 @@ public interface Agnes {
   CompletableFuture<DockerContainer> inspectContainer(String containerId);
 
   CompletableFuture<Void> startContainer(String containerId);
+
+  CompletableFuture<Void> stopContainer(String containerId);
 }
