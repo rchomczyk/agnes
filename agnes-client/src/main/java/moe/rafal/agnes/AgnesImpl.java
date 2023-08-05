@@ -90,6 +90,7 @@ class AgnesImpl implements Agnes {
 
   private ContainerDetails fromContainerInspectPacket(S2CContainerInspectPacket packet) {
     return new ContainerDetails(
+        packet.getContainerId(),
         packet.getImageHash(),
         packet.getAddress(),
         packet.getAssignedMemory(),
