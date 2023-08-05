@@ -15,23 +15,11 @@
  *
  */
 
-package moe.rafal.agnes.docker;
+package moe.rafal.agnes.container.specification;
 
-import moe.rafal.agnes.proto.container.s2c.S2CContainerInspectPacket;
+public class ContainerSpecificationBuildException extends IllegalArgumentException {
 
-public final class DockerContainerFactory {
-
-  private DockerContainerFactory() {
-
-  }
-
-  public static DockerContainer produceDockerContainer(S2CContainerInspectPacket packet) {
-    return new DockerContainer(
-        packet.getImageHash(),
-        packet.getAddress(),
-        packet.getAssignedMemory(),
-        packet.getAssignedMemorySwap(),
-        packet.getPort(),
-        packet.getStartedAt());
+  ContainerSpecificationBuildException(String message) {
+    super(message);
   }
 }

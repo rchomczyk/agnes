@@ -17,19 +17,15 @@
 
 package moe.rafal.agnes;
 
-import java.util.concurrent.CompletableFuture;
-import moe.rafal.agnes.container.ContainerDetails;
-import moe.rafal.agnes.container.specification.ContainerSpecification;
+public final class AgnesUtils {
 
-public interface Agnes {
+  private static final long BYTE_COUNT_PER_UNIT = 1024L;
 
-  CompletableFuture<ContainerDetails> inspectContainer(String containerId);
+  private AgnesUtils() {
 
-  CompletableFuture<String> createContainer(ContainerSpecification containerSpecification);
+  }
 
-  CompletableFuture<Void> deleteContainer(String containerId);
-
-  CompletableFuture<Void> startContainer(String containerId);
-
-  CompletableFuture<Void> stopContainer(String containerId);
+  public static long getBytesCountOf(int gigabytes) {
+    return gigabytes * BYTE_COUNT_PER_UNIT * BYTE_COUNT_PER_UNIT * BYTE_COUNT_PER_UNIT;
+  }
 }

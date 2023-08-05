@@ -15,16 +15,16 @@
  *
  */
 
-package moe.rafal.agnes.docker;
+package moe.rafal.agnes.image;
 
 import static java.lang.String.format;
 
-public class DockerImage {
+public class Image {
 
   private final String imageName;
   private final String imageTag;
 
-  public DockerImage(String imageName, String tag) {
+  public Image(String imageName, String tag) {
     this.imageName = imageName;
     this.imageTag = tag;
   }
