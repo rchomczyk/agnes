@@ -34,9 +34,10 @@ public final class ProtoUtils {
 
   public static <T> void packArray(PacketPacker packer,
       ThrowingBiConsumer<PacketPacker, T, IOException> packValue,
+      ThrowingBiConsumer<PacketPacker, Integer, IOException> packHeader,
       T[] values)
       throws IOException {
-    packer.packArrayHeader(values.length);
+    packHeader.accept(packer, values.length);
     for (T value : values) {
       packValue.accept(packer, value);
     }
@@ -44,9 +45,10 @@ public final class ProtoUtils {
 
   public static <T> T[] unpackArray(PacketUnpacker unpacker,
       ThrowingFunction<PacketUnpacker, T, IOException> unpackValue,
+      ThrowingFunction<PacketUnpacker, Integer, IOException> unpackHeader,
       IntFunction<T[]> arrayResolver)
       throws IOException {
-    final int elementCount = unpacker.unpackArrayHeader();
+    final int elementCount = unpackHeader.apply(unpacker);
     final T[] elements = arrayResolver.apply(elementCount);
     for (int currentIndex = 0; currentIndex < elementCount; currentIndex++) {
       elements[currentIndex] = unpackValue.apply(unpacker);

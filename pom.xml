@@ -93,9 +93,7 @@
           </execution>
         </executions>
         <configuration>
-          <dependencyReducedPomLocation>
-            ${project.build.directory}/dependency-reduced-pom.xml
-          </dependencyReducedPomLocation>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
         </configuration>
       </plugin>
       <plugin>

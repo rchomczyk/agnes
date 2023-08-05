@@ -28,6 +28,7 @@ public class ContainerSpecification {
   private final String[] exposedPorts;
   private final String[] publishPorts;
   private final String[] environmentalVariables;
+  private final String[] binds;
 
   protected ContainerSpecification(
       Image image,
@@ -36,7 +37,8 @@ public class ContainerSpecification {
       String hostname,
       String[] exposedPorts,
       String[] publishPorts,
-      String[] environmentalVariables) {
+      String[] environmentalVariables,
+      String[] binds) {
     this.image = image;
     this.assignedMemory = assignedMemory;
     this.assignedMemorySwap = assignedMemorySwap;
@@ -44,6 +46,7 @@ public class ContainerSpecification {
     this.exposedPorts = exposedPorts;
     this.publishPorts = publishPorts;
     this.environmentalVariables = environmentalVariables;
+    this.binds = binds;
   }
 
   public Image getImage() {
@@ -72,5 +75,9 @@ public class ContainerSpecification {
 
   public String[] getEnvironmentalVariables() {
     return environmentalVariables;
+  }
+
+  public String[] getBinds() {
+    return binds;
   }
 }

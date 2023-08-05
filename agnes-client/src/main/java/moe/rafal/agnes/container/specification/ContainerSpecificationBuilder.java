@@ -30,6 +30,7 @@ public class ContainerSpecificationBuilder {
   private String[] exposedPorts;
   private String[] publishPorts;
   private String[] environmentalVariables;
+  private String[] binds;
 
   private ContainerSpecificationBuilder() {
 
@@ -74,10 +75,15 @@ public class ContainerSpecificationBuilder {
     return this;
   }
 
+  public ContainerSpecificationBuilder withBinds(String[] binds) {
+    this.binds = binds;
+    return this;
+  }
+
   public ContainerSpecification build() throws ContainerSpecificationBuildException {
     assertBuilderValues();
     return new ContainerSpecification(image, assignedMemory, assignedMemorySwap, hostname,
-        exposedPorts, publishPorts, environmentalVariables);
+        exposedPorts, publishPorts, environmentalVariables, binds);
   }
 
   private void assertBuilderValues() throws ContainerSpecificationBuildException {
@@ -88,6 +94,7 @@ public class ContainerSpecificationBuilder {
     assertBuilderValue(exposedPorts, "exposed_ports");
     assertBuilderValue(publishPorts, "publish_ports");
     assertBuilderValue(environmentalVariables, "environmental_variables");
+    assertBuilderValue(binds, "binds");
   }
 
   private static void assertBuilderValue(Object value, String valueId)
