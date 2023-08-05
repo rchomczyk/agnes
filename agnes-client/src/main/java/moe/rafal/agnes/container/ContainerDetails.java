@@ -15,11 +15,11 @@
  *
  */
 
-package moe.rafal.agnes.docker;
+package moe.rafal.agnes.container;
 
 import java.time.Instant;
 
-public class DockerContainer {
+public class ContainerDetails {
 
   private final String imageHash;
   private final String address;
@@ -28,7 +28,7 @@ public class DockerContainer {
   private final int port;
   private final Instant startedAt;
 
-  public DockerContainer(
+  public ContainerDetails(
       String imageHash,
       String address,
       long assignedMemory,

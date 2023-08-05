@@ -20,9 +20,8 @@ package moe.rafal.agnes;
 import static moe.rafal.agnes.proto.ProtoUtils.PROTO_BROADCAST_CHANNEL_NAME;
 
 import java.util.concurrent.CompletableFuture;
-import moe.rafal.agnes.docker.DockerContainer;
-import moe.rafal.agnes.docker.DockerContainerFactory;
-import moe.rafal.agnes.docker.DockerImage;
+import moe.rafal.agnes.container.ContainerDetails;
+import moe.rafal.agnes.container.specification.ContainerSpecification;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerCreatePacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerDeletePacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerInspectPacket;
@@ -41,30 +40,16 @@ class AgnesImpl implements Agnes {
   }
 
   @Override
-  public CompletableFuture<DockerContainer> inspectContainer(String containerId) {
+  public CompletableFuture<ContainerDetails> inspectContainer(String containerId) {
     return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerInspectPacket(containerId))
         .thenApply(S2CContainerInspectPacket.class::cast)
-        .thenApply(DockerContainerFactory::produceDockerContainer);
+        .thenApply(this::fromContainerInspectPacket);
   }
 
   @Override
-  public CompletableFuture<String> createContainer(DockerImage image,
-      long availableMemory,
-      long availableMemorySwap,
-      String hostname,
-      String[] exposedPorts,
-      String[] publishPorts,
-      String[] environmentalVariables) {
+  public CompletableFuture<String> createContainer(ContainerSpecification containerSpecification) {
     return cory.request(PROTO_BROADCAST_CHANNEL_NAME,
-            new C2SContainerCreatePacket(
-                image.getImageName(),
-                image.getImageTag(),
-                availableMemory,
-                availableMemorySwap,
-                hostname,
-                exposedPorts,
-                publishPorts,
-                environmentalVariables))
+            intoCreateContainerPacket(containerSpecification))
         .thenApply(S2CContainerCreatePacket.class::cast)
         .thenApply(S2CContainerCreatePacket::getContainerId);
   }
@@ -88,5 +73,28 @@ class AgnesImpl implements Agnes {
     return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerStopPacket(containerId))
         .thenAccept(packet -> {
         });
+  }
+
+  private C2SContainerCreatePacket intoCreateContainerPacket(
+      ContainerSpecification containerSpecification) {
+    return new C2SContainerCreatePacket(
+        containerSpecification.getImage().getImageName(),
+        containerSpecification.getImage().getImageTag(),
+        containerSpecification.getAssignedMemory(),
+        containerSpecification.getAssignedMemorySwap(),
+        containerSpecification.getHostname(),
+        containerSpecification.getExposedPorts(),
+        containerSpecification.getPublishPorts(),
+        containerSpecification.getEnvironmentalVariables());
+  }
+
+  private ContainerDetails fromContainerInspectPacket(S2CContainerInspectPacket packet) {
+    return new ContainerDetails(
+        packet.getImageHash(),
+        packet.getAddress(),
+        packet.getAssignedMemory(),
+        packet.getAssignedMemorySwap(),
+        packet.getPort(),
+        packet.getStartedAt());
   }
 }
