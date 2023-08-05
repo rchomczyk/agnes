@@ -21,6 +21,7 @@ import java.time.Instant;
 
 public class ContainerDetails {
 
+  private final String containerId;
   private final String imageHash;
   private final String address;
   private final long assignedMemory;
@@ -29,18 +30,24 @@ public class ContainerDetails {
   private final Instant startedAt;
 
   public ContainerDetails(
+      String containerId,
       String imageHash,
       String address,
       long assignedMemory,
       long assignedMemorySwap,
       int port,
       Instant startedAt) {
+    this.containerId = containerId;
     this.imageHash = imageHash;
     this.address = address;
     this.assignedMemory = assignedMemory;
     this.assignedMemorySwap = assignedMemorySwap;
     this.port = port;
     this.startedAt = startedAt;
+  }
+
+  public String getContainerId() {
+    return containerId;
   }
 
   public String getImageHash() {
