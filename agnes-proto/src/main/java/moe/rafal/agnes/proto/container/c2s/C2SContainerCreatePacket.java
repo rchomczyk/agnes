@@ -35,6 +35,7 @@ public class C2SContainerCreatePacket extends Packet {
   private String[] exposedPorts;
   private String[] publishPorts;
   private String[] environmentVariables;
+  private String[] binds;
 
   public C2SContainerCreatePacket(
       String imageId,
@@ -44,7 +45,8 @@ public class C2SContainerCreatePacket extends Packet {
       String hostname,
       String[] exposedPorts,
       String[] publishPorts,
-      String[] environmentVariables) {
+      String[] environmentVariables,
+      String[] binds) {
     this.imageId = imageId;
     this.imageTag = imageTag;
     this.assignedMemory = assignedMemory;
@@ -53,6 +55,7 @@ public class C2SContainerCreatePacket extends Packet {
     this.exposedPorts = exposedPorts;
     this.publishPorts = publishPorts;
     this.environmentVariables = environmentVariables;
+    this.binds = binds;
   }
 
   public C2SContainerCreatePacket() {
@@ -66,9 +69,11 @@ public class C2SContainerCreatePacket extends Packet {
     packer.packLong(assignedMemory);
     packer.packLong(assignedMemorySwap);
     packer.packString(hostname);
-    packArray(packer, PacketPacker::packString, exposedPorts);
-    packArray(packer, PacketPacker::packString, publishPorts);
-    packArray(packer, PacketPacker::packString, environmentVariables);
+    packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader, exposedPorts);
+    packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader, publishPorts);
+    packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader,
+        environmentVariables);
+    packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader, binds);
   }
 
   @Override
@@ -78,9 +83,18 @@ public class C2SContainerCreatePacket extends Packet {
     assignedMemory = unpacker.unpackLong();
     assignedMemorySwap = unpacker.unpackLong();
     hostname = unpacker.unpackString();
-    exposedPorts = unpackArray(unpacker, PacketUnpacker::unpackString, String[]::new);
-    publishPorts = unpackArray(unpacker, PacketUnpacker::unpackString, String[]::new);
-    environmentVariables = unpackArray(unpacker, PacketUnpacker::unpackString, String[]::new);
+    exposedPorts = unpackArray(unpacker,
+        PacketUnpacker::unpackString,
+        PacketUnpacker::unpackArrayHeader, String[]::new);
+    publishPorts = unpackArray(unpacker,
+        PacketUnpacker::unpackString,
+        PacketUnpacker::unpackArrayHeader, String[]::new);
+    environmentVariables = unpackArray(unpacker,
+        PacketUnpacker::unpackString,
+        PacketUnpacker::unpackArrayHeader, String[]::new);
+    binds = unpackArray(unpacker,
+        PacketUnpacker::unpackString,
+        PacketUnpacker::unpackArrayHeader, String[]::new);
   }
 
   public String getImageId() {
@@ -113,5 +127,9 @@ public class C2SContainerCreatePacket extends Packet {
 
   public String[] getEnvironmentVariables() {
     return environmentVariables;
+  }
+
+  public String[] getBinds() {
+    return binds;
   }
 }

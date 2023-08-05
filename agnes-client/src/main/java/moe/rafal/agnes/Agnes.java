@@ -29,7 +29,7 @@ public interface Agnes {
 
   CompletableFuture<Void> deleteContainer(String containerId);
 
-  CompletableFuture<Void> startContainer(String containerId);
+  CompletableFuture<String> startContainer(String containerId);
 
   CompletableFuture<Void> stopContainer(String containerId);
 }

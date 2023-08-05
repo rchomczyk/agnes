@@ -72,6 +72,7 @@ public class ContainerCreatePacketListener extends
     hostConfig.setMemory(packet.getAssignedMemory());
     hostConfig.setMemorySwap(packet.getAssignedMemorySwap());
     hostConfig.setPortBindings(getPublishPorts(packet));
+    hostConfig.setBinds(List.of(packet.getBinds()));
     containerCreateRequest.setHostConfig(hostConfig);
     return containerCreateRequest;
   }
@@ -91,7 +92,10 @@ public class ContainerCreatePacketListener extends
   private Map<String, List<PortBinding>> getPublishPorts(C2SContainerCreatePacket packet) {
     final Map<String, List<PortBinding>> publishPorts = new HashMap<>();
     for (final String publishPort : packet.getPublishPorts()) {
-      publishPorts.put(publishPort, of(new PortBinding(packet.getHostname(), publishPort)));
+      final String[] aggregatedPorts = publishPort.split(":");
+      final String innerPort = aggregatedPorts[0];
+      final String localPort = aggregatedPorts[1];
+      publishPorts.put(innerPort, of(new PortBinding(packet.getHostname(), localPort)));
     }
     return publishPorts;
   }

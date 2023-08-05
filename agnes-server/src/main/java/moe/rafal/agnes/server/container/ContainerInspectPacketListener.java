@@ -24,7 +24,6 @@ import de.gesellix.docker.client.EngineResponseContent;
 import de.gesellix.docker.remote.api.ContainerInspectResponse;
 import de.gesellix.docker.remote.api.ContainerState;
 import de.gesellix.docker.remote.api.HostConfig;
-import de.gesellix.docker.remote.api.NetworkSettings;
 import de.gesellix.docker.remote.api.PortBinding;
 import java.time.Instant;
 import java.util.Collection;
@@ -77,7 +76,7 @@ public class ContainerInspectPacketListener extends
 
   private PortBinding extractContainerPortBinding(ContainerInspectResponse inspectResult) {
     return Stream.of(extractParameterFromInspectionResult(inspectResult,
-            ContainerInspectResponse::getNetworkSettings, NetworkSettings::getPorts))
+            ContainerInspectResponse::getHostConfig, HostConfig::getPortBindings))
         .map(Map::values)
         .flatMap(Collection::stream)
         .flatMap(List::stream)

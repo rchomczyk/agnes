@@ -29,6 +29,7 @@ import moe.rafal.agnes.proto.container.c2s.C2SContainerStartPacket;
 import moe.rafal.agnes.proto.container.c2s.C2SContainerStopPacket;
 import moe.rafal.agnes.proto.container.s2c.S2CContainerCreatePacket;
 import moe.rafal.agnes.proto.container.s2c.S2CContainerInspectPacket;
+import moe.rafal.agnes.proto.container.s2c.S2CContainerStartPacket;
 import moe.rafal.cory.Cory;
 
 class AgnesImpl implements Agnes {
@@ -62,10 +63,10 @@ class AgnesImpl implements Agnes {
   }
 
   @Override
-  public CompletableFuture<Void> startContainer(String containerId) {
+  public CompletableFuture<String> startContainer(String containerId) {
     return cory.request(PROTO_BROADCAST_CHANNEL_NAME, new C2SContainerStartPacket(containerId))
-        .thenAccept(packet -> {
-        });
+        .thenApply(S2CContainerStartPacket.class::cast)
+        .thenApply(S2CContainerStartPacket::getContainerId);
   }
 
   @Override
@@ -85,7 +86,8 @@ class AgnesImpl implements Agnes {
         containerSpecification.getHostname(),
         containerSpecification.getExposedPorts(),
         containerSpecification.getPublishPorts(),
-        containerSpecification.getEnvironmentalVariables());
+        containerSpecification.getEnvironmentalVariables(),
+        containerSpecification.getBinds());
   }
 
   private ContainerDetails fromContainerInspectPacket(S2CContainerInspectPacket packet) {
