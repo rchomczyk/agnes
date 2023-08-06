@@ -17,15 +17,15 @@
 
 package moe.rafal.agnes;
 
-public final class AgnesUtils {
+import static moe.rafal.agnes.HumanReadables.SI;
 
-  private static final long BYTE_COUNT_PER_UNIT = 1024L;
+public final class AgnesUtils {
 
   private AgnesUtils() {
 
   }
 
-  public static long getBytesCountOf(int gigabytes) {
-    return gigabytes * BYTE_COUNT_PER_UNIT * BYTE_COUNT_PER_UNIT * BYTE_COUNT_PER_UNIT;
+  public static long parseDataSize(String value) {
+    return SI.parse(value);
   }
 }
