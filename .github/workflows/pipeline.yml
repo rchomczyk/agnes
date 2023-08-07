@@ -21,5 +21,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - uses: s4u/maven-settings-action@v2.8.0
+        with:
+          servers: |
+            [{
+                "id": "rafal-moe-repo-private",
+                "username": "${{ secrets.RAFAL_MOE_REPO_IDENTITY }}",
+                "password": "${{ secrets.RAFAL_MOE_REPO_TOKEN }}"
+            }]
       - name: Build with Maven
         run: mvn -B package --file pom.xml
