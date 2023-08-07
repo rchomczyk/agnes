@@ -18,6 +18,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>rafal-moe-repo-private</id>
+      <url>https://repo.rafal.moe/private/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.msgpack</groupId>
