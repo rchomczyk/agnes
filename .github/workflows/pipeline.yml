@@ -1,4 +1,4 @@
-name: cory's pipeline
+name: agnes's pipeline
 on:
   push:
     branches: [ "master" ]
