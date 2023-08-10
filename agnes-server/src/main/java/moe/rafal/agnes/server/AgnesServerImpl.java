@@ -17,34 +17,32 @@
 
 package moe.rafal.agnes.server;
 
+import static io.lettuce.core.RedisURI.create;
+import static java.time.Duration.ofSeconds;
 import static moe.rafal.agnes.proto.ProtoUtils.PROTO_BROADCAST_CHANNEL_NAME;
-import static moe.rafal.cory.message.MessageBrokerFactory.produceMessageBroker;
-import static moe.rafal.cory.message.MessageBrokerSpecification.of;
+import static moe.rafal.cory.message.RedisMessageBrokerFactory.produceRedisMessageBroker;
 
 import de.gesellix.docker.client.DockerClient;
 import de.gesellix.docker.client.DockerClientImpl;
 import java.io.IOException;
-import java.time.Duration;
 import moe.rafal.agnes.server.container.ContainerCreatePacketListener;
 import moe.rafal.agnes.server.container.ContainerDeletePacketListener;
 import moe.rafal.agnes.server.container.ContainerInspectPacketListener;
 import moe.rafal.agnes.server.container.ContainerStartPacketListener;
 import moe.rafal.agnes.server.container.ContainerStopPacketListener;
+import moe.rafal.agnes.server.scheduler.ServerLockingThread;
 import moe.rafal.cory.Cory;
 import moe.rafal.cory.CoryBuilder;
 
 class AgnesServerImpl implements AgnesServer {
 
-  private static final String NON_SPECIFIED_USERNAME = "";
-  private static final String NON_SPECIFIED_PASSWORD = "";
   private final Cory cory;
+  private ServerLockingThread serverLockingThread;
 
   AgnesServerImpl() {
     this.cory = CoryBuilder.newBuilder()
-        .withMessageBroker(produceMessageBroker(of("nats://127.0.0.1:4222",
-            NON_SPECIFIED_USERNAME,
-            NON_SPECIFIED_PASSWORD,
-            Duration.ofSeconds(30))))
+        .withMessageBroker(
+            produceRedisMessageBroker(create("redis://127.0.0.1:6379"), ofSeconds(30)))
         .build();
   }
 
@@ -61,10 +59,12 @@ class AgnesServerImpl implements AgnesServer {
         new ContainerStartPacketListener(dockerClient, cory));
     cory.observe(PROTO_BROADCAST_CHANNEL_NAME,
         new ContainerStopPacketListener(dockerClient, cory));
+    startServerLocking();
   }
 
   @Override
   public void ditch() throws AgnesException {
+    serverLockingThread.interrupt();
     try {
       cory.close();
     } catch (IOException exception) {
@@ -72,5 +72,10 @@ class AgnesServerImpl implements AgnesServer {
           "Could not gracefully ditch agnes server, because of unexpected exception.",
           exception);
     }
+  }
+
+  private void startServerLocking() {
+    serverLockingThread = new ServerLockingThread();
+    serverLockingThread.start();
   }
 }
