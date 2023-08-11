@@ -18,8 +18,10 @@
 package moe.rafal.agnes.container.specification;
 
 import static java.lang.String.format;
+import static moe.rafal.agnes.proto.container.ContainerCreationType.CREATE;
 
 import moe.rafal.agnes.image.Image;
+import moe.rafal.agnes.proto.container.ContainerCreationType;
 
 public class ContainerSpecificationBuilder {
 
@@ -31,9 +33,14 @@ public class ContainerSpecificationBuilder {
   private String[] publishPorts;
   private String[] environmentalVariables;
   private String[] binds;
+  private ContainerCreationType creationType;
 
   private ContainerSpecificationBuilder() {
-
+    this.exposedPorts = new String[0];
+    this.publishPorts = new String[0];
+    this.environmentalVariables = new String[0];
+    this.binds = new String[0];
+    this.creationType = CREATE;
   }
 
   public static ContainerSpecificationBuilder newBuilder() {
@@ -80,10 +87,15 @@ public class ContainerSpecificationBuilder {
     return this;
   }
 
+  public ContainerSpecificationBuilder withCreationType(ContainerCreationType creationType) {
+    this.creationType = creationType;
+    return this;
+  }
+
   public ContainerSpecification build() throws ContainerSpecificationBuildException {
     assertBuilderValues();
     return new ContainerSpecification(image, assignedMemory, assignedMemorySwap, hostname,
-        exposedPorts, publishPorts, environmentalVariables, binds);
+        exposedPorts, publishPorts, environmentalVariables, binds, creationType);
   }
 
   private void assertBuilderValues() throws ContainerSpecificationBuildException {
@@ -95,6 +107,7 @@ public class ContainerSpecificationBuilder {
     assertBuilderValue(publishPorts, "publish_ports");
     assertBuilderValue(environmentalVariables, "environmental_variables");
     assertBuilderValue(binds, "binds");
+    assertBuilderValue(creationType, "creation_type");
   }
 
   private static void assertBuilderValue(Object value, String valueId)
