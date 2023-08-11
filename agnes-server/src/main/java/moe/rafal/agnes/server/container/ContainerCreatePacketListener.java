@@ -51,8 +51,18 @@ public class ContainerCreatePacketListener extends
   public void receive(String channelName, String replyChannelName,
       C2SContainerCreatePacket packet) {
     final ContainerCreateRequest containerCreateRequest = getContainerCreateRequest(packet);
-    final EngineResponseContent<ContainerCreateResponse> creationResult = dockerClient.createContainer(
-        containerCreateRequest);
+    final EngineResponseContent<ContainerCreateResponse> creationResult;
+    switch (packet.getCreationType()) {
+      case CREATE:
+        creationResult = dockerClient.createContainer(containerCreateRequest);
+        break;
+      case CREATE_AND_RUN:
+        creationResult = dockerClient.run(containerCreateRequest);
+        break;
+      default:
+        throw new ContainerCreationException(
+            "Could not create container, because of specifying unknown state.");
+    }
 
     final ContainerCreateResponse extractedResult = creationResult.getContent();
     final S2CContainerCreatePacket replyingPacket = new S2CContainerCreatePacket(

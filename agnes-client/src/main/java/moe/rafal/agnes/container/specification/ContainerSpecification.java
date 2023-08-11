@@ -18,6 +18,7 @@
 package moe.rafal.agnes.container.specification;
 
 import moe.rafal.agnes.image.Image;
+import moe.rafal.agnes.proto.container.ContainerCreationType;
 
 public class ContainerSpecification {
 
@@ -29,6 +30,7 @@ public class ContainerSpecification {
   private final String[] publishPorts;
   private final String[] environmentalVariables;
   private final String[] binds;
+  private final ContainerCreationType creationType;
 
   protected ContainerSpecification(
       Image image,
@@ -38,7 +40,8 @@ public class ContainerSpecification {
       String[] exposedPorts,
       String[] publishPorts,
       String[] environmentalVariables,
-      String[] binds) {
+      String[] binds,
+      ContainerCreationType creationType) {
     this.image = image;
     this.assignedMemory = assignedMemory;
     this.assignedMemorySwap = assignedMemorySwap;
@@ -47,6 +50,7 @@ public class ContainerSpecification {
     this.publishPorts = publishPorts;
     this.environmentalVariables = environmentalVariables;
     this.binds = binds;
+    this.creationType = creationType;
   }
 
   public Image getImage() {
@@ -79,5 +83,9 @@ public class ContainerSpecification {
 
   public String[] getBinds() {
     return binds;
+  }
+
+  public ContainerCreationType getCreationType() {
+    return creationType;
   }
 }

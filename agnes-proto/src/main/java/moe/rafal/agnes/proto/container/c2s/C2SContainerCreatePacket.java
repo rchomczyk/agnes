@@ -21,6 +21,7 @@ import static moe.rafal.agnes.proto.ProtoUtils.packArray;
 import static moe.rafal.agnes.proto.ProtoUtils.unpackArray;
 
 import java.io.IOException;
+import moe.rafal.agnes.proto.container.ContainerCreationType;
 import moe.rafal.cory.Packet;
 import moe.rafal.cory.serdes.PacketPacker;
 import moe.rafal.cory.serdes.PacketUnpacker;
@@ -36,6 +37,7 @@ public class C2SContainerCreatePacket extends Packet {
   private String[] publishPorts;
   private String[] environmentVariables;
   private String[] binds;
+  private ContainerCreationType creationType;
 
   public C2SContainerCreatePacket(
       String imageId,
@@ -46,7 +48,8 @@ public class C2SContainerCreatePacket extends Packet {
       String[] exposedPorts,
       String[] publishPorts,
       String[] environmentVariables,
-      String[] binds) {
+      String[] binds,
+      ContainerCreationType creationType) {
     this.imageId = imageId;
     this.imageTag = imageTag;
     this.assignedMemory = assignedMemory;
@@ -56,6 +59,7 @@ public class C2SContainerCreatePacket extends Packet {
     this.publishPorts = publishPorts;
     this.environmentVariables = environmentVariables;
     this.binds = binds;
+    this.creationType = creationType;
   }
 
   public C2SContainerCreatePacket() {
@@ -74,6 +78,7 @@ public class C2SContainerCreatePacket extends Packet {
     packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader,
         environmentVariables);
     packArray(packer, PacketPacker::packString, PacketPacker::packArrayHeader, binds);
+    packer.packString(creationType.name());
   }
 
   @Override
@@ -95,6 +100,7 @@ public class C2SContainerCreatePacket extends Packet {
     binds = unpackArray(unpacker,
         PacketUnpacker::unpackString,
         PacketUnpacker::unpackArrayHeader, String[]::new);
+    creationType = ContainerCreationType.valueOf(unpacker.unpackString());
   }
 
   public String getImageId() {
@@ -131,5 +137,9 @@ public class C2SContainerCreatePacket extends Packet {
 
   public String[] getBinds() {
     return binds;
+  }
+
+  public ContainerCreationType getCreationType() {
+    return creationType;
   }
 }

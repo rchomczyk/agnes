@@ -87,7 +87,8 @@ class AgnesImpl implements Agnes {
         containerSpecification.getExposedPorts(),
         containerSpecification.getPublishPorts(),
         containerSpecification.getEnvironmentalVariables(),
-        containerSpecification.getBinds());
+        containerSpecification.getBinds(),
+        containerSpecification.getCreationType());
   }
 
   private ContainerDetails fromContainerInspectPacket(S2CContainerInspectPacket packet) {
