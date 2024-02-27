@@ -21,7 +21,7 @@
   <repositories>
     <repository>
       <id>eternalcode-snapshots</id>
-      <url>https://repo.eternalcode.pl/releases/</url>
+      <url>https://repo.eternalcode.pl/snapshots/</url>
     </repository>
   </repositories>
 
