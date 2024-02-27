@@ -43,14 +43,14 @@ class AgnesServerImpl implements AgnesServer {
 
   AgnesServerImpl() {
     this.cory = CoryBuilder.newBuilder()
+        .withPacketPackerFactory(MessagePackPacketPackerFactory.INSTANCE)
+        .withPacketUnpackerFactory(MessagePackPacketUnpackerFactory.INSTANCE)
         .withMessageBroker(
             produceRedisMessageBroker(
                 MessagePackPacketPackerFactory.INSTANCE,
                 MessagePackPacketUnpackerFactory.INSTANCE,
                 create("redis://127.0.0.1:6379"), ofSeconds(30))
             )
-        .withPacketPackerFactory(MessagePackPacketPackerFactory.INSTANCE)
-        .withPacketUnpackerFactory(MessagePackPacketUnpackerFactory.INSTANCE)
         .build();
   }
 
