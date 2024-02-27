@@ -33,6 +33,8 @@ import moe.rafal.agnes.server.container.ContainerStopPacketListener;
 import moe.rafal.agnes.server.scheduler.ServerLockingThread;
 import moe.rafal.cory.Cory;
 import moe.rafal.cory.CoryBuilder;
+import moe.rafal.cory.serdes.MessagePackPacketPackerFactory;
+import moe.rafal.cory.serdes.MessagePackPacketUnpackerFactory;
 
 class AgnesServerImpl implements AgnesServer {
 
@@ -42,7 +44,13 @@ class AgnesServerImpl implements AgnesServer {
   AgnesServerImpl() {
     this.cory = CoryBuilder.newBuilder()
         .withMessageBroker(
-            produceRedisMessageBroker(create("redis://127.0.0.1:6379"), ofSeconds(30)))
+            produceRedisMessageBroker(
+                MessagePackPacketPackerFactory.INSTANCE,
+                MessagePackPacketUnpackerFactory.INSTANCE,
+                create("redis://127.0.0.1:6379"), ofSeconds(30))
+            )
+        .withPacketPackerFactory(MessagePackPacketPackerFactory.INSTANCE)
+        .withPacketUnpackerFactory(MessagePackPacketUnpackerFactory.INSTANCE)
         .build();
   }
 
