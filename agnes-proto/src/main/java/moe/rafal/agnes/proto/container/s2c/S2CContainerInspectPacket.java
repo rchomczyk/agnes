@@ -17,13 +17,11 @@
 
 package moe.rafal.agnes.proto.container.s2c;
 
-import java.io.IOException;
 import java.time.Instant;
-import moe.rafal.cory.Packet;
-import moe.rafal.cory.serdes.PacketPacker;
-import moe.rafal.cory.serdes.PacketUnpacker;
+import java.util.Objects;
+import moe.rafal.cory.pojo.PojoPacket;
 
-public class S2CContainerInspectPacket extends Packet {
+public class S2CContainerInspectPacket extends PojoPacket {
 
   private String containerId;
   private String imageHash;
@@ -40,7 +38,8 @@ public class S2CContainerInspectPacket extends Packet {
       long assignedMemory,
       long assignedMemorySwap,
       int port,
-      Instant startedAt) {
+      Instant startedAt
+  ) {
     super();
     this.containerId = containerId;
     this.imageHash = imageHash;
@@ -55,53 +54,89 @@ public class S2CContainerInspectPacket extends Packet {
     super();
   }
 
-  @Override
-  public void write(PacketPacker packer) throws IOException {
-    packer.packString(containerId);
-    packer.packString(imageHash);
-    packer.packString(address);
-    packer.packLong(assignedMemory);
-    packer.packLong(assignedMemorySwap);
-    packer.packInt(port);
-    packer.packInstant(startedAt);
-  }
-
-  @Override
-  public void read(PacketUnpacker unpacker) throws IOException {
-    containerId = unpacker.unpackString();
-    imageHash = unpacker.unpackString();
-    address = unpacker.unpackString();
-    assignedMemory = unpacker.unpackLong();
-    assignedMemorySwap = unpacker.unpackLong();
-    port = unpacker.unpackInt();
-    startedAt = unpacker.unpackInstant();
-  }
-
   public String getContainerId() {
     return containerId;
+  }
+
+  public void setContainerId(final String containerId) {
+    this.containerId = containerId;
   }
 
   public String getImageHash() {
     return imageHash;
   }
 
+  public void setImageHash(final String imageHash) {
+    this.imageHash = imageHash;
+  }
+
   public String getAddress() {
     return address;
+  }
+
+  public void setAddress(final String address) {
+    this.address = address;
   }
 
   public long getAssignedMemory() {
     return assignedMemory;
   }
 
+  public void setAssignedMemory(final long assignedMemory) {
+    this.assignedMemory = assignedMemory;
+  }
+
   public long getAssignedMemorySwap() {
     return assignedMemorySwap;
+  }
+
+  public void setAssignedMemorySwap(final long assignedMemorySwap) {
+    this.assignedMemorySwap = assignedMemorySwap;
   }
 
   public int getPort() {
     return port;
   }
 
+  public void setPort(final int port) {
+    this.port = port;
+  }
+
   public Instant getStartedAt() {
     return startedAt;
+  }
+
+  public void setStartedAt(final Instant startedAt) {
+    this.startedAt = startedAt;
+  }
+
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) {
+      return true;
+    }
+
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+
+    if (!super.equals(object)) {
+      return false;
+    }
+
+    final S2CContainerInspectPacket that = (S2CContainerInspectPacket) object;
+    return assignedMemory == that.assignedMemory
+        && assignedMemorySwap == that.assignedMemorySwap
+        && port == that.port
+        && Objects.equals(containerId, that.containerId)
+        && Objects.equals(imageHash, that.imageHash)
+        && Objects.equals(address, that.address)
+        && Objects.equals(startedAt, that.startedAt);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), containerId, imageHash, address, assignedMemory,
+        assignedMemorySwap, port, startedAt);
   }
 }

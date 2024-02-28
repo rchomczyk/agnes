@@ -17,16 +17,14 @@
 
 package moe.rafal.agnes.proto.container.s2c;
 
-import java.io.IOException;
-import moe.rafal.cory.Packet;
-import moe.rafal.cory.serdes.PacketPacker;
-import moe.rafal.cory.serdes.PacketUnpacker;
+import java.util.Objects;
+import moe.rafal.cory.pojo.PojoPacket;
 
-public class S2CContainerStopPacket extends Packet {
+public class S2CContainerStopPacket extends PojoPacket {
 
   private String containerId;
 
-  public S2CContainerStopPacket(String containerId) {
+  public S2CContainerStopPacket(final String containerId) {
     super();
     this.containerId = containerId;
   }
@@ -35,17 +33,34 @@ public class S2CContainerStopPacket extends Packet {
     super();
   }
 
-  @Override
-  public void write(PacketPacker packer) throws IOException {
-    packer.packString(containerId);
-  }
-
-  @Override
-  public void read(PacketUnpacker unpacker) throws IOException {
-    containerId = unpacker.unpackString();
-  }
-
   public String getContainerId() {
     return containerId;
+  }
+
+  public void setContainerId(final String containerId) {
+    this.containerId = containerId;
+  }
+
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) {
+      return true;
+    }
+
+    if (object == null || getClass() != object.getClass()) {
+      return false;
+    }
+
+    if (!super.equals(object)) {
+      return false;
+    }
+
+    final S2CContainerStopPacket that = (S2CContainerStopPacket) object;
+    return Objects.equals(containerId, that.containerId);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), containerId);
   }
 }

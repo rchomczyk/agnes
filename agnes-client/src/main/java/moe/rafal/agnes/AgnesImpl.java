@@ -84,11 +84,11 @@ class AgnesImpl implements Agnes {
         containerSpecification.getAssignedMemory(),
         containerSpecification.getAssignedMemorySwap(),
         containerSpecification.getHostname(),
+        containerSpecification.getCreationType(),
         containerSpecification.getExposedPorts(),
         containerSpecification.getPublishPorts(),
         containerSpecification.getEnvironmentalVariables(),
-        containerSpecification.getBinds(),
-        containerSpecification.getCreationType());
+        containerSpecification.getBinds());
   }
 
   private ContainerDetails fromContainerInspectPacket(S2CContainerInspectPacket packet) {
